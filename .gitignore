@@ -131,3 +131,7 @@ backend/src/services/http-client.private.env.json
 # Cypress E2E tests automatic screenshots and videos
 /frontend/cypress/videos/
 /frontend/cypress/screenshots/
+/backend/.yarn/
+/backend/.yarnrc.yml
+/frontend/.yarn/
+/frontend/.yarnrc.yml
