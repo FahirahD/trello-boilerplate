@@ -32,6 +32,7 @@
     "@babel/core": "7.16.0",
     "@babel/eslint-parser": "7.16.3",
     "@intlify/vue-i18n-loader": "1.1.0",
+    "@mdi/font": "^7.1.96",
     "@typescript-eslint/eslint-plugin": "4.33.0",
     "@typescript-eslint/parser": "4.33.0",
     "@vue/cli-plugin-babel": "4.5.15",
@@ -59,10 +60,7 @@
     "chokidar": "^3.0.0",
     "svgo": "^2.0.0",
     "micromatch": "^4.0.4",
-    "**/request/**/uuid": "^7.0.0",
-    "@babel/eslint-parser/**/eslint": "^7.5.0",
-    "@vue/cli-shared-utils": "^4.5.15",
-    "sass-loader/**/webpack": "^4.0.0"
+    "@vue/cli-shared-utils": "^4.5.15"
   },
   "browserslist": [
     "> 1%",

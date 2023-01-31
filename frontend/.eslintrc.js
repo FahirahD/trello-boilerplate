@@ -2,6 +2,7 @@ module.exports = {
   env: {
     es6: true,
   },
+
   plugins: [
     '@typescript-eslint',
   ],
@@ -19,6 +20,7 @@ module.exports = {
   },
   ignorePatterns: [],
   rules: {
+    "import/no-extraneous-dependencies": ["error", {"devDependencies": true}],
     'no-plusplus': ['error', {
       allowForLoopAfterthoughts: true,
     }],
