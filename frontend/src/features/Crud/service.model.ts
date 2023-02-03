@@ -15,9 +15,8 @@ export class Board extends BaseModel {
 
   static instanceDefaults(): BoardInterface {
     return {
-      _id: null,
       name: null,
-      imgUrl: null,
+      imgUrl: null
     };
   }
 }

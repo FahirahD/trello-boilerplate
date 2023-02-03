@@ -1,8 +1,14 @@
 import { HooksObject } from '@feathersjs/feathers';
 
+const wait = (context:any) => new Promise<any>((resolve) => {
+  setTimeout(() => {
+    resolve(context);
+  }, 2 * 1000);
+});
+
 export default {
   before: {
-    all: [],
+    all: [wait],
     find: [],
     get: [],
     create: [],

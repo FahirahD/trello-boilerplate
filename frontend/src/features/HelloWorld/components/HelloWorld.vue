@@ -158,7 +158,7 @@ export default defineComponent({
     msg: String,
   },
 
-  setup() {
+  setup(props) {
     const crash = () => {
       const t = 0;
       // This will crash the app!!!

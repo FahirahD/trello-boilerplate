@@ -1,45 +1,27 @@
 <template>
   <div>
-    <v-dialog
-      v-model="editDialog"
-      persistent
-      max-width="290"
-    >
-      <v-card>
-        <v-card-title>
-          Modify card
-        </v-card-title>
-        <v-card-text>
-          <v-text-field v-model="selectedBoard.name" />
-        </v-card-text>
-        <v-card-actions>
-          <v-btn
-            text
-            @click="selectedBoard.save();
-                    editDialog=false"
-          >
-            <v-icon
-              left
-              dark
-            >
-              mdi-content-save
-            </v-icon>
-            SAVE
-          </v-btn>
-          <v-btn text @click="editDialog=false">
-            <v-icon
-              left
-              dark
-            >
-              mdi-cancel
-            </v-icon>
-            Cancel
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <CreateEditDialog
+      v-model="isDialogOpen"
+      :create-mode="createMode"
+      :board="selectedBoard"
+    />
     <v-container fluid>
-      <v-row>
+      <v-btn text @click="openCreateDialog">
+        create
+      </v-btn>
+      <v-row v-if="isBoardLoading">
+        <v-col
+          v-for="n in 3"
+          :key="n"
+          cols="12"
+          md="6"
+          lg="4"
+          xl="2"
+        >
+          <board-card skeleton-mode />
+        </v-col>
+      </v-row>
+      <v-row v-else>
         <v-col
           v-for="board in boards"
           :key="board._id"
@@ -48,31 +30,7 @@
           lg="4"
           xl="2"
         >
-          <v-card>
-            <v-card-title>
-              {{ board.name }}
-            </v-card-title>
-            <v-card-actions>
-              <v-btn text @click="modifyBoard(board)">
-                <v-icon
-                  left
-                  dark
-                >
-                  mdi-file-edit-outline
-                </v-icon>
-                Modify
-              </v-btn>
-              <v-btn text @click="board.remove()">
-                <v-icon
-                  left
-                  dark
-                >
-                  mdi-delete
-                </v-icon>
-                Delete
-              </v-btn>
-            </v-card-actions>
-          </v-card>
+          <board-card :board="board" @modify="openModifyDialog" />
         </v-col>
       </v-row>
     </v-container>
@@ -83,9 +41,17 @@
 import { computed, defineComponent, ref } from '@vue/composition-api';
 import { useFind } from 'feathers-vuex';
 import { Board } from '@/features/Crud/service.model';
+import BoardCard from '@/features/Crud/components/BoardCard.vue';
+import CreateEditDialog from '@/features/Crud/components/CreateEditDialog.vue';
 
 export default defineComponent({
   name: 'Crud',
+
+  components: {
+    CreateEditDialog,
+    BoardCard,
+  },
+
   setup(props, context) {
     // 1. Get a reference to the model class
     const { Board } = context.root.$FeathersVuex.api;
@@ -96,21 +62,37 @@ export default defineComponent({
     }));
 
     // 3. Provide the model and params in the options
-    const boards = useFind({ model: Board, params: boardsParams });
-
-    const editDialog = ref(false);
+    const { items: boards, isPending: isBoardLoading } = useFind({ model: Board, params: boardsParams });
     const selectedBoard = ref(new Board());
 
-    const modifyBoard = (board:Board):void => {
+    const createMode = ref(false);
+    const isDialogOpen = ref(false);
+    const openModifyDialog = (board:Board):void => {
+      createMode.value = false;
       selectedBoard.value = board.clone();
-      editDialog.value = true;
+      isDialogOpen.value = true;
     };
+
+    const closeDialog = ():void => {
+      isDialogOpen.value = false;
+    };
+
+    const openCreateDialog = ():void => {
+      isDialogOpen.value = true;
+      createMode.value = true;
+      selectedBoard.value = new Board();
+    };
+
     // 4. Return the data, named as you prefer
     return {
-      modifyBoard,
+      openCreateDialog,
+      openModifyDialog,
+      closeDialog,
+      isBoardLoading,
       selectedBoard,
-      editDialog,
-      boards: boards.items
+      isDialogOpen,
+      boards,
+      createMode,
     };
   }
 });
