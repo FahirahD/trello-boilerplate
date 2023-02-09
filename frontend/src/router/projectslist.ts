@@ -1,8 +1,9 @@
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export default (lazyLoad) => ([
   {
-    path: '/crud',
+    path: '/projectslist',
+    name: 'ProjectsList',
     meta: { title: 'Demo' },
-    component: lazyLoad('features/Crud/views/Crud.vue'),
+    component: lazyLoad('features/ProjectsList/views/ProjectsList.vue'),
   },
 ]);

@@ -1,63 +1,102 @@
 <template>
-  <v-card>
-    <v-card-title
-      v-if="skeletonMode"
+  <v-card
+    v-if="skeletonMode"
+    v-click-outside="onClickOutside"
+    :color="colors"
+    flat
+    :ripple="!isCreatingMode"
+  >
+    <v-card-text
+      v-if="isCreatingMode"
+      ripple="false"
+      height="100%"
     >
-      <v-skeleton-loader
-        min-width="
-        333"
-        type="heading"
+      <v-text-field v-model="currentBoard.name" label="Name" :rules="[(v) => v.length > 0 ||'Cannot be empty']" />
+      <v-text-field
+        :rules="[(v) => v.length > 0 ||'Cannot be empty']"
+        label="Background"
+        value="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
       />
-    </v-card-title>
-    <v-card-title v-else>
-      {{ board.name }}
-    </v-card-title>
-    <v-card-actions v-if="skeletonMode">
-      <v-skeleton-loader
-        max-height="40"
-        min-width="125"
-        class="pa-2"
-        type="image"
-      /><v-skeleton-loader
-        max-height="40"
-        min-width="125"
-        class="pa-2"
-        type="image"
-      />
-    </v-card-actions>
-    <v-card-actions v-else>
+      <v-spacer />
+      <v-card-actions>
+        <v-btn
+          class="ml-0 white--text font-weight-bold"
+          :disabled="!currentBoard.name"
+          color="green"
+          @click="createBoard"
+        >
+          CREATE
+        </v-btn>
+        <v-spacer />
+      </v-card-actions>
+    </v-card-text>
+    <v-card-subtitle
+      v-else
+      class=" a pa-1"
+      @click="$emit('addBoard'); isCreatingMode=true; colors='white'"
+    >
+      Add a board...
+    </v-card-subtitle>
+  </v-card>
+  <v-card
+    v-else
+    class="ma-0"
+    :ripple="false"
+    @click="goToProjectList"
+  >
+    <v-img
+      class="white--text "
+      height="200px"
+      :src="boardImage"
+    >
+      <v-app-bar
+        flat
+        color="rgba(0, 0, 0, 0)"
+      >
+        <v-toolbar-title class="text-h6 white--text pl-0">
+          {{ currentBoard.name }}
+        </v-toolbar-title>
+
+        <v-spacer />
+      </v-app-bar>
+    </v-img>
+    <v-card-actions class="d-flex">
+      <v-avatar
+        class="mr-2"
+        size="25px"
+      >
+        <img
+          src="https://www.gravatar.com/avatar/62da7cdbf9f4072f8b935b5452c8d5b6?s=80&d=retro&r=g"
+          alt="John"
+        >
+      </v-avatar>
+
+      <div class="">
+        A month ago
+      </div>
+      <v-spacer />
       <v-btn
-        :disabled="board.isRemovePending"
+        :loading="currentBoard.isRemovePending"
         text
-        @click="$emit('modify',board)"
+        fab
+        small
+        color="red"
+        @click.stop="removeBoard(currentBoard)"
       >
         <v-icon
           left
           dark
         >
-          mdi-file-edit-outline
+          mdi-delete-forever
         </v-icon>
-        Modify
-      </v-btn>
-      <v-btn
-        :loading="board.isRemovePending"
-        text
-        @click="board.remove()"
-      >
-        <v-icon
-          left
-          dark
-        >
-          mdi-delete
-        </v-icon>
-        Delete
       </v-btn>
     </v-card-actions>
   </v-card>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, ref, watch } from '@vue/composition-api';
+import router from '@/router';
 
 export default defineComponent({
   name: 'BoardCard',
@@ -67,10 +106,59 @@ export default defineComponent({
     skeletonMode: Boolean,
   },
 
-  setup() {
-    return {
+  setup(props) {
+    const isCreatingMode = ref(false);
+    const colors = ref('grey lighten-2');
+    // eslint-disable-next-line max-len
+    const boardImage = ref('https://images.unsplash.com/photo-1544604860-206456f08229?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1950&q=80');
+    const currentBoard = ref();
+    const textName = ref();
+    const deleteClicked = ref(false);
+    watch(() => props.board, () => {
+      currentBoard.value = props.board;
+    }, { immediate: true });
 
+    const goToProjectList = () => {
+      router.push('ProjectsList');
+    };
+
+    const onClickOutside = () => {
+      isCreatingMode.value = false;
+      colors.value = 'grey lighten-2';
+    };
+
+    const createBoard = async () => {
+      await props.board.create();
+      isCreatingMode.value = false;
+      colors.value = 'grey lighten-2';
+    };
+    const removeBoard = async (board) => {
+      await board.remove();
+    };
+
+    return {
+      boardImage,
+      createBoard,
+      colors,
+      currentBoard,
+      isCreatingMode,
+      onClickOutside,
+      textName,
+      goToProjectList,
+      removeBoard
     };
   },
 });
 </script>
+
+<style scoped>
+
+.a{}
+
+.a:hover{
+
+  text-decoration:underline;
+  background-color: #BDBDBD;
+}
+
+</style>

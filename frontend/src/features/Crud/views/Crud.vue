@@ -1,40 +1,29 @@
 <template>
-  <div>
-    <CreateEditDialog
-      v-model="isDialogOpen"
-      :create-mode="createMode"
-      :board="selectedBoard"
-    />
-    <v-container fluid>
-      <v-btn text @click="openCreateDialog">
-        create
-      </v-btn>
-      <v-row v-if="isBoardLoading">
-        <v-col
-          v-for="n in 3"
-          :key="n"
-          cols="12"
-          md="6"
-          lg="4"
-          xl="2"
-        >
-          <board-card skeleton-mode />
-        </v-col>
-      </v-row>
-      <v-row v-else>
-        <v-col
-          v-for="board in boards"
-          :key="board._id"
-          cols="12"
-          md="6"
-          lg="4"
-          xl="2"
-        >
-          <board-card :board="board" @modify="openModifyDialog" />
-        </v-col>
-      </v-row>
-    </v-container>
-  </div>
+  <v-container fluid>
+    <v-row>
+      <v-col
+        v-for="board in boards"
+        :key="board._id"
+        class="px-1"
+        sm="6"
+        lg="2"
+        md="4"
+        xl="1"
+      >
+        <board-card :board="board" />
+      </v-col>
+      <v-col
+        class="px-1"
+        cols="12"
+        sm="6"
+        lg="2"
+        md="4"
+        xl="1"
+      >
+        <board-card :board="selectedBoard" skeleton-mode @addBoard="addBoard" />
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script lang="ts">
@@ -42,13 +31,11 @@ import { computed, defineComponent, ref } from '@vue/composition-api';
 import { useFind } from 'feathers-vuex';
 import { Board } from '@/features/Crud/service.model';
 import BoardCard from '@/features/Crud/components/BoardCard.vue';
-import CreateEditDialog from '@/features/Crud/components/CreateEditDialog.vue';
 
 export default defineComponent({
   name: 'Crud',
 
   components: {
-    CreateEditDialog,
     BoardCard,
   },
 
@@ -73,6 +60,10 @@ export default defineComponent({
       isDialogOpen.value = true;
     };
 
+    const addBoard = () => {
+      selectedBoard.value = new Board();
+    };
+
     const closeDialog = ():void => {
       isDialogOpen.value = false;
     };
@@ -93,6 +84,7 @@ export default defineComponent({
       isDialogOpen,
       boards,
       createMode,
+      addBoard,
     };
   }
 });

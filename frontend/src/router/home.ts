@@ -2,6 +2,7 @@
 export default (lazyLoad) => ([
   {
     path: '/home',
+    meta: { title: 'Demo' },
     component: lazyLoad('features/Home/views/Main.vue'),
   },
 ]);

@@ -3,6 +3,7 @@ export default (lazyLoad) => ([
   {
     path: '/login',
     name: 'Login',
+    meta: { title: 'Login' },
     component: lazyLoad('features/Auth/views/Login.vue'),
   },
 ]);

@@ -4,6 +4,7 @@ import VueRouter, { RouteConfig } from 'vue-router';
 import Home from './home';
 import Auth from './auth';
 import Crud from './crud';
+import Projectslist from './projectslist';
 
 Vue.use(VueRouter);
 
@@ -20,6 +21,7 @@ export const routes = [
   ...Home(lazyLoad),
   ...Auth(lazyLoad),
   ...Crud(lazyLoad),
+  ...Projectslist(lazyLoad),
   {
     path: '/unauthenticated',
     name: 'Unauthenticated',
