@@ -3,44 +3,41 @@ import feathersClient, {
   makeServicePlugin,
   BaseModel,
 } from '@/feathers-client';
-import { UserInterface } from '@/shared/types/users';
+import { ColumnInterface } from '@/shared/types/columns';
 import hooks from './service.hooks';
 
-const modelName = 'User';
-const servicePath = 'users';
+const modelName = 'Column';
+const servicePath = 'columns';
 
-export class User extends BaseModel {
+export class Column extends BaseModel {
   // Required for $FeathersVuex plugin to work after production transpile.
   static modelName = modelName;
 
-  static instanceDefaults(): UserInterface {
+  static instanceDefaults(): ColumnInterface {
     return {
-      _id: null,
-      displayName: null,
-      email: null,
-      password: null,
-      user: null,
+      name: null,
+      boardId: null
     };
   }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface User {}
+export interface Column {}
 
 declare module 'feathers-vuex' {
   interface FeathersVuexStoreState {
-    [servicePath]: ServiceState<User>
+    [servicePath]: ServiceState<Column>
   }
 }
 
 declare module 'src/store' {
   interface ApiModels {
-    [modelName]: typeof User
+    [modelName]: typeof Column
   }
 }
 
 const servicePlugin = makeServicePlugin({
-  Model: User,
+  Model: Column,
   service: feathersClient.service(servicePath),
   servicePath
 });

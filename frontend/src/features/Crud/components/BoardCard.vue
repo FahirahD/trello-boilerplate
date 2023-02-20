@@ -11,9 +11,9 @@
       ripple="false"
       height="100%"
     >
-      <v-text-field v-model="currentBoard.name" label="Name" :rules="[(v) => v.length > 0 ||'Cannot be empty']" />
+      <v-text-field v-model="currentBoard.name" label="Name" :rules="[(v) => !!v ||'Cannot be empty']" />
       <v-text-field
-        :rules="[(v) => v.length > 0 ||'Cannot be empty']"
+        :rules="[(v) => !!v ||'Cannot be empty']"
         label="Background"
         value="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
       />
@@ -42,7 +42,7 @@
     v-else
     class="ma-0"
     :ripple="false"
-    @click="goToProjectList"
+    @click="goToProjectList(currentBoard._id)"
   >
     <v-img
       class="white--text "
@@ -95,18 +95,25 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from '@vue/composition-api';
+import {
+  computed, defineComponent, ref, watch
+} from '@vue/composition-api';
 import router from '@/router';
+import store from '@/store';
 
 export default defineComponent({
   name: 'BoardCard',
 
   props: {
+    userId: String,
     board: Object,
     skeletonMode: Boolean,
   },
 
   setup(props) {
+    // eslint-disable-next-line no-underscore-dangle
+    const userId = computed(() => store.state.auth.user._id);
+
     const isCreatingMode = ref(false);
     const colors = ref('grey lighten-2');
     // eslint-disable-next-line max-len
@@ -118,8 +125,8 @@ export default defineComponent({
       currentBoard.value = props.board;
     }, { immediate: true });
 
-    const goToProjectList = () => {
-      router.push('ProjectsList');
+    const goToProjectList = (id) => {
+      router.push(`/projectsList/${id}`);
     };
 
     const onClickOutside = () => {
@@ -128,6 +135,9 @@ export default defineComponent({
     };
 
     const createBoard = async () => {
+      // eslint-disable-next-line no-param-reassign
+      props.board.userId = userId.value;
+      console.log(props.userId);
       await props.board.create();
       isCreatingMode.value = false;
       colors.value = 'grey lighten-2';

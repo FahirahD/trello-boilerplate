@@ -22,7 +22,7 @@ export class Board extends BaseModel {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface User {}
+export interface Board {}
 
 declare module 'feathers-vuex' {
   interface FeathersVuexStoreState {

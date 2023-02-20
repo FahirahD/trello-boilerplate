@@ -11,7 +11,7 @@
           <h3 style="color: white" v-text="$route.meta.title" />
         </v-col>
         <v-spacer />
-        <v-col cols="auto">
+        <v-col v-if="isUserAuthenticated" cols="auto">
           <v-menu offset-y>
             <template #activator="{ on, attrs }">
               <v-btn
@@ -29,10 +29,34 @@
             </template>
             <v-list>
               <v-list-item>
-                <v-list-item-title>Logout</v-list-item-title>
+                <v-list-item-title @click="logOut">
+                  Logout
+                </v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
+        </v-col>
+        <v-col v-else class="pa-0" cols="auto">
+          <v-btn
+            depressed
+            tile
+            class=" white--text"
+            color="transparent"
+            variant="flat"
+            to="/login"
+          >
+            LOGIN
+          </v-btn>
+          <v-btn
+            depressed
+            tile
+            class="white--text"
+            color="transparent"
+            variant="flat"
+            to="/signup"
+          >
+            SIGN UP
+          </v-btn>
         </v-col>
       </v-row>
     </v-app-bar>
@@ -44,9 +68,68 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import {
+  computed, defineComponent, ref, watch,
+  onMounted
+} from '@vue/composition-api';
+import useAuth from '@/features/Auth/composites';
+import store from '@/store';
+import router from '@/router';
 
 export default defineComponent({
   name: 'App',
+
+  setup(props, context) {
+    // 1. Get a reference to the model class);
+
+    const { logout } = useAuth();
+    const { $store, $router } = context.root;
+
+    const isUserAuthenticated = computed(() => {
+      if (store.state.auth.user) return true;
+      return false;
+    });
+    console.log(store.state.auth.user);
+
+    watch(
+      () => $store.state.auth.user,
+      (user) => {
+        console.log('watched');
+        const toRouteName = user ? 'projects' : 'login';
+        $router.replace({ name: toRouteName });
+      }
+    );
+
+    // router.beforeEach(async (to, from, next) => {
+    //   if (to.name !== 'Login' && !isUserAuthenticated) next({ name: 'Login' });
+    //   else next();
+    //   // validate URL
+    //   const link = router.resolve(to.path);
+    //   if (link.resolved?.matched.length === 0) {
+    //     next('/404');
+    //     return;
+    //   }
+    //   next();
+    // });
+
+    onMounted(() => {
+      $store.dispatch('auth/authenticate').catch((error) => {
+        if (!error.message.includes('Could not find stored JWT')) {
+          console.error(error);
+          $router.replace({ name: 'login' });
+        }
+      });
+    });
+
+    const logOut = async () => {
+      await logout();
+    };
+
+    return {
+      logOut,
+      isUserAuthenticated,
+    };
+  }
 });
+
 </script>

@@ -3,8 +3,10 @@ POST http://localhost:3030/users
 Content-Type: application/json
 
 {
-  "email": "your_email",
-  "password": "your_password"
+  "user": "user2",
+  "email": "your_email2",
+  "displayName": "User2",
+  "password": "user2"
 }
 
 ### Login
@@ -12,7 +14,7 @@ POST http://localhost:3030/authentication
 Content-Type: application/json
 
 {
-  "email": "your_email",
-  "password": "your_password",
+  "email": "your_email2",
+  "password": "user2",
   "strategy": "local"
 }

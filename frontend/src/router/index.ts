@@ -4,7 +4,9 @@ import VueRouter, { RouteConfig } from 'vue-router';
 import Home from './home';
 import Auth from './auth';
 import Crud from './crud';
+import Login from './login';
 import Projectslist from './projectslist';
+import Signup from './signup';
 
 Vue.use(VueRouter);
 
@@ -22,6 +24,8 @@ export const routes = [
   ...Auth(lazyLoad),
   ...Crud(lazyLoad),
   ...Projectslist(lazyLoad),
+  ...Login(lazyLoad),
+  ...Signup(lazyLoad),
   {
     path: '/unauthenticated',
     name: 'Unauthenticated',

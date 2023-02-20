@@ -20,7 +20,12 @@
         md="4"
         xl="1"
       >
-        <board-card :board="selectedBoard" skeleton-mode @addBoard="addBoard" />
+        <board-card
+          :user-id="userId"
+          :board="selectedBoard"
+          skeleton-mode
+          @addBoard="addBoard"
+        />
       </v-col>
     </v-row>
   </v-container>
@@ -31,6 +36,7 @@ import { computed, defineComponent, ref } from '@vue/composition-api';
 import { useFind } from 'feathers-vuex';
 import { Board } from '@/features/Crud/service.model';
 import BoardCard from '@/features/Crud/components/BoardCard.vue';
+import store from '@/store';
 
 export default defineComponent({
   name: 'Crud',
@@ -44,9 +50,15 @@ export default defineComponent({
     const { Board } = context.root.$FeathersVuex.api;
 
     // 2. Create a computed property for the params
+
+    // eslint-disable-next-line no-underscore-dangle
+    const userId = computed(() => store.state.auth.user?._id);
+
     const boardsParams = computed(() => ({
-      query: {}
+      query: { userId: userId.value }
     }));
+
+    console.log(userId.value);
 
     // 3. Provide the model and params in the options
     const { items: boards, isPending: isBoardLoading } = useFind({ model: Board, params: boardsParams });
@@ -85,6 +97,7 @@ export default defineComponent({
       boards,
       createMode,
       addBoard,
+      userId,
     };
   }
 });

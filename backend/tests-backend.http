@@ -24,3 +24,33 @@ GET http://localhost:3030/boards/
 Accept: application/json
 
 ###
+
+POST http://localhost:3030/columns/
+Content-Type: application/json
+
+{
+  "name": "nice",
+  "boardId": "63e3c4e5a1929ceb036c6f9b"
+}
+
+###
+
+GET http://localhost:3030/columns/
+Accept: application/json
+
+###
+
+GET http://localhost:3030/tasks/
+Accept: application/json
+
+
+###
+
+POST http://localhost:3030/tasks/
+Content-Type: application/json
+
+{
+  "name": "todo4",
+  "columnId": "b63e63b9d51f4a03e163fd7b2"
+
+}
