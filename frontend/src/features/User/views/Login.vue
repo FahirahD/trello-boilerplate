@@ -16,6 +16,33 @@
           Login
         </v-btn>
       </v-form>
+      <v-dialog
+        v-model="dialog"
+        persistent
+        width="auto"
+      >
+        <v-card>
+          <v-card-title class="text-h5">
+            <v-icon large>
+              mdi-alert-circle
+            </v-icon>
+            Authentication Error
+          </v-card-title>
+          <v-card-text>Invalid login </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+
+            <v-btn
+              tile
+              depressed
+              class="green--text"
+              @click="dialog = false"
+            >
+              OK
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </div>
   </v-container>
 </template>
@@ -35,6 +62,7 @@ export default defineComponent({
     const password = ref('');
 
     const { login } = useAuth();
+    const dialog = ref(false);
 
     const isAuthenticatePending = computed(() => store.state.auth?.isAuthenticatePending);
 
@@ -43,6 +71,7 @@ export default defineComponent({
       try {
         await login({ email: user.value, password: password.value, strategy: 'local' });
       } catch (e) {
+        dialog.value = true;
         console.log(e);
       }
       router.push('/projects');
@@ -53,7 +82,8 @@ export default defineComponent({
       password,
       signIn,
       isAuthenticatePending,
-      isFormValid
+      isFormValid,
+      dialog,
     };
   }
 });

@@ -1,3 +1,5 @@
+// eslint-disable-next-line consistent-return
+
 export default {
   before: {
     all: [],

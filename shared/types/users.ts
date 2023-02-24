@@ -1,5 +1,4 @@
 import { Id } from './commons';
-
 export interface BaseModelInterface {
   _id: Id;
 }

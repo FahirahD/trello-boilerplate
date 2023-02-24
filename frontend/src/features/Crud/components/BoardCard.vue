@@ -126,7 +126,7 @@ export default defineComponent({
     }, { immediate: true });
 
     const goToProjectList = (id) => {
-      router.push(`/projectsList/${id}`);
+      router.push(`/boards/${id}`);
     };
 
     const onClickOutside = () => {

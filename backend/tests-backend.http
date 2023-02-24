@@ -35,7 +35,7 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:3030/columns/
+GET http://localhost:3030/columns/63e3c4e5a1929ceb036c6f9g
 Accept: application/json
 
 ###
@@ -54,3 +54,5 @@ Content-Type: application/json
   "columnId": "b63e63b9d51f4a03e163fd7b2"
 
 }
+
+###

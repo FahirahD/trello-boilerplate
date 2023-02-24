@@ -91,14 +91,14 @@ export default defineComponent({
     });
     console.log(store.state.auth.user);
 
-    watch(
-      () => $store.state.auth.user,
-      (user) => {
-        console.log('watched');
-        const toRouteName = user ? 'projects' : 'login';
-        $router.replace({ name: toRouteName });
-      }
-    );
+    // watch(
+    //   () => $store.state.auth.user,
+    //   (user) => {
+    //     console.log('watched');
+    //     const toRouteName = user ? 'projects' : 'login';
+    //     $router.replace({ name: toRouteName });
+    //   }
+    // );
 
     // router.beforeEach(async (to, from, next) => {
     //   if (to.name !== 'Login' && !isUserAuthenticated) next({ name: 'Login' });
@@ -123,6 +123,7 @@ export default defineComponent({
 
     const logOut = async () => {
       await logout();
+      $router.replace({ name: 'login' });
     };
 
     return {

@@ -53,9 +53,21 @@
           </v-card>
         </v-menu>
       </v-card-subtitle>
-      <v-card-text v-for="task in tasks" :key="task._id" class="pt-1 pb-1">
-        <Task :task="task" />
-      </v-card-text>
+      <draggable
+        :list="tasks"
+        group="`tasks${column._id}`"
+        :data-zone="column._id"
+        @end="(e) => checkMove(e)"
+      >
+        <v-card-text
+          v-for="task in tasks"
+          :id="task._id"
+          :key="task._id"
+          class="pt-1 pb-1"
+        >
+          <Task :task="task" />
+        </v-card-text>
+      </draggable>
       <Task
         :task="newTask"
         :add-mode="true"
@@ -104,14 +116,17 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref } from '@vue/composition-api';
+import draggable from 'vuedraggable';
 import { useFind } from 'feathers-vuex';
 import Task from '@/features/ProjectsList/components/Task.vue';
+import store from '@/store';
 
 export default defineComponent({
   name: 'Column',
 
   components: {
     Task,
+    draggable,
   },
 
   props: {
@@ -126,10 +141,24 @@ export default defineComponent({
       // eslint-disable-next-line no-underscore-dangle
       query: { columnId: props.column._id }
     }));
+    const tasksParams2 = computed(() => ({
+      // eslint-disable-next-line no-underscore-dangle
+      query: { }
+    }));
 
     // 3. Provide the model and params in the options
     const { items: tasks, isPending: isTasksLoading } = useFind({ model: Task, params: tasksParams });
     const addList = ref(true);
+
+    const checkMove = (v) => {
+      const { items: tasks, isPending: isTasksLoading } = useFind({ model: Task, params: tasksParams2 });
+
+      // eslint-disable-next-line no-underscore-dangle
+      const task = ref(tasks.value.find((x) => x._id === v.item.id));
+
+      task.value.columnId = v.to.dataset.zone;
+      task.value.save();
+    };
 
     const addBoard = ref(true);
     const newTask = ref();
@@ -166,6 +195,7 @@ export default defineComponent({
       addNewTask,
       saveCol,
       deleteCol,
+      checkMove
     };
   },
 });

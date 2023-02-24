@@ -18,6 +18,17 @@ const socket = io(host, {
   transports: ['websocket'],
 });
 
+// eslint-disable-next-line consistent-return
+const errorHandler = (ctx) => {
+  // console.log('999999');
+  // if (ctx.error) {
+  //   const { error } = ctx;
+  //   console.log(error);
+  //   return ctx;
+  // }
+
+};
+
 const feathersClient = feathers()
   .configure(socketio(socket))
   .configure(auth({ storage: window.localStorage }))
@@ -30,7 +41,7 @@ const feathersClient = feathers()
         )
       ],
     },
-    error: {},
+    error: { all: [errorHandler] },
   });
 
 export default feathersClient;

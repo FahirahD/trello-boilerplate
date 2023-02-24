@@ -47,6 +47,33 @@
           SIGN UP
         </v-btn>
       </v-form>
+      <v-dialog
+        v-model="dialog"
+        persistent
+        width="auto"
+      >
+        <v-card>
+          <v-card-title class="text-h5">
+            <v-icon large>
+              mdi-alert-circle
+            </v-icon>
+            Authentication Error
+          </v-card-title>
+          <v-card-text>{{ message }}</v-card-text>
+          <v-card-actions>
+            <v-spacer />
+
+            <v-btn
+              tile
+              depressed
+              class="green--text"
+              @click="dialog = false"
+            >
+              OK
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </div>
   </v-container>
 </template>
@@ -66,13 +93,17 @@ export default defineComponent({
 
     const newUser = ref(new User());
     const confirmPassWord = ref('');
+    const dialog = ref(false);
+    const message = ref('');
 
     const signUp = async (user) => {
       try {
         await user.create();
       } catch (e) {
+        dialog.value = true;
         newUser.value = new User();
-        console.log(e);
+        message.value = e.message;
+
         return;
       }
       // eslint-disable-next-line no-param-reassign
@@ -86,7 +117,9 @@ export default defineComponent({
       newUser,
       confirmPassWord,
       isPassWordConfirmed,
-      signUp
+      signUp,
+      message,
+      dialog
     };
   }
 });
