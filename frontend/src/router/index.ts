@@ -7,6 +7,7 @@ import Crud from './crud';
 import Login from './login';
 import Projectslist from './projectslist';
 import Signup from './signup';
+import store from '@/store';
 
 Vue.use(VueRouter);
 
@@ -45,13 +46,21 @@ const router = new VueRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  // validate URL
-  const link = router.resolve(to.path);
-  if (link.resolved?.matched.length === 0) {
-    next('/404');
-    return;
+  const isAuthenticated = store.state.auth.user;
+  console.log(isAuthenticated);
+  console.log(to.matched);
+  if (to.matched.length === 0) {
+    // The requested route doesn't exist, redirect to 404 page
+    next({ name: 'NotFound' });
+  } else if (to.matched.some((record) => record.meta.requiresAuth) && !isAuthenticated) {
+    // The user is not authenticated, redirect to login page
+    next({ name: 'login' });
+  } else if (to.matched.some((record) => record.meta.requiresGuest) && isAuthenticated) {
+    // The user is already authenticated, redirect to home page
+    next({ name: 'projects' });
+  } else {
+    // The user is authenticated and the route exists, continue to the requested page
+    next();
   }
-  next();
 });
-
 export default router;

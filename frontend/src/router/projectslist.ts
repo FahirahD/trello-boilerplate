@@ -9,7 +9,7 @@ export default (lazyLoad) => ([
   {
     path: '/boards/:id',
     props: true,
-    meta: { title: 'Demo' },
+    meta: { title: 'Demo', requiresAuth: true },
     component: lazyLoad('features/ProjectsList/views/ProjectsList.vue'),
     // eslint-disable-next-line consistent-return
   //   beforeEnter: async (to, from, next) => {

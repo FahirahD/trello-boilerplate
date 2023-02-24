@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import { initAuth } from 'feathers-vuex';
 import { FeathersVuex } from '@/feathers-client';
 import RootState from './interfaces';
 

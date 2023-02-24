@@ -4,7 +4,10 @@ export default (lazyLoad) => ([
     path: '/projects',
     name: 'projects',
     props: true,
-    meta: { title: 'Demo' },
+    meta: {
+      title: 'Demo',
+      requiresAuth: true
+    },
     component: lazyLoad('features/Crud/views/Crud.vue'),
   },
 ]);

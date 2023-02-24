@@ -105,23 +105,6 @@ export default defineComponent({
     //   }
     // );
 
-    router.beforeEach(async (to, from, next) => {
-      if (!isUserAuthenticated) {
-        next({ name: 'login' });
-      } else if (isUserAuthenticated) {
-        next({ name: 'projects' });
-      } else {
-        next();
-      }
-      // validate URL
-      const link = router.resolve(to.path);
-      if (link.resolved?.matched.length === 0) {
-        next('/404');
-        return;
-      }
-      next();
-    });
-
     onMounted(() => {
       $store.dispatch('auth/authenticate').catch((error) => {
         if (!error.message.includes('Could not find stored JWT')) {
