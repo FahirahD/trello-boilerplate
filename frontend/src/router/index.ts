@@ -36,13 +36,6 @@ export const routes = [
     name: 'NotFound',
     component: lazyLoad('features/Error/views/NotFound.vue'),
   },
-  {
-    path: '/BoardNotFound',
-    name: 'BoardNotFound',
-    alias: ['/boards:id'],
-    meta: { title: 'Demo' },
-    component: lazyLoad('features/Error/views/BoardNotFound.vue'),
-  },
 ] as RouteConfig[];
 
 const router = new VueRouter({

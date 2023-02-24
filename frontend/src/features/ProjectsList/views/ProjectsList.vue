@@ -4,56 +4,85 @@
     class="ml-0 pl-0 pt-0 mr-0 pr-0"
     style="
      height: 100%;
+     width: 100%;
+    background-size: 2500px;
     background-image: url('http://bit.ly/3XgO0dX')"
   >
-    <v-form class="pl-0 pr-0 mt-0">
-      <v-text-field
-        v-model="textValue"
-        dark
-        solo-inverted
-        class="  pl-0 mt-0 text-md-h5"
-        text
-        label="Name"
-        :rules="[(v) => !!v ||'Cannot be empty']"
-        @input="modifyProject"
-      />
-    </v-form>
-    <v-row class="ml-6 mr-6">
-      <v-col
-        v-for="column in columns"
-        :key="column._id"
-        class="px-1"
-        cols="12"
-        sm="3"
-        lg="2"
-        md="2"
-        xl="1"
-      >
-        <Column :create-list-mode="false" :column="column" />
-      </v-col>
-      <v-col
-        cols="12"
-        sm="3"
-        lg="2"
-        md="2"
-        xl="1"
-      >
-        <Column
-          :board-i-d="id"
-          :create-list-mode="true"
-          :column="newColumn"
-          @prepareCol="prepareCol"
+    <div v-if="isDataValid" class="pa-0 ma-0">
+      <v-form class="pl-0 pr-0 mt-0 mr-0">
+        <v-text-field
+          v-model="textValue"
+          dark
+          solo-inverted
+          class="  pl-0 mt-0 text-md-h5"
+          text
+          label="Name"
+          :rules="[(v) => !!v ||'Cannot be empty']"
+          @input="modifyProject"
         />
-      </v-col>
-    </v-row>
+      </v-form>
+      <v-row class="ml-6 mr-6">
+        <v-col
+          v-for="column in columns"
+          :key="column._id"
+          class="px-1"
+          cols="12"
+          sm="3"
+          lg="2"
+          md="2"
+          xl="1"
+        >
+          <Column :create-list-mode="false" :column="column" />
+        </v-col>
+        <v-col
+          cols="12"
+          sm="3"
+          lg="2"
+          md="2"
+          xl="1"
+        >
+          <Column
+            :board-i-d="id"
+            :create-list-mode="true"
+            :column="newColumn"
+            @prepareCol="prepareCol"
+          />
+        </v-col>
+      </v-row>
+    </div>
+    <div
+      v-else
+      style="background-color: #757575;
+     height: 100%"
+      fluid
+      class="ma-0 pa-0 pt-1 "
+    >
+      <v-alert
+        dark
+        border="top"
+        tile
+        class="ma-0"
+        color="red"
+        icon="mdi-alert"
+        type="error"
+      >
+        {{ errorMessage }}
+      </v-alert>
+      <div class="flex-fill fill-height d-flex align-center justify-center backdrop-blur">
+        <div class="d-flex flex-column align-center garda-blue--text">
+          <v-img contain height="100px" src="https://trelloclone.bewave.io/img/error.025ebce7.gif" />
+        </div>
+      </div>
+    </div>
   </v-container>
 </template>
 
 <script lang="ts">
 import {
-  computed, defineComponent, ref, watch
+  computed, defineComponent, onBeforeMount, ref
 } from '@vue/composition-api';
 import { useFind } from 'feathers-vuex';
+import axios from 'axios/index';
 import Column from '@/features/ProjectsList/components/Column.vue';
 
 export default defineComponent({
@@ -69,6 +98,17 @@ export default defineComponent({
 
   setup(props, context) {
     // eslint-disable-next-line max-len
+    const isDataValid = ref(true);
+    const errorMessage = ref('');
+
+    onBeforeMount(async () => {
+      try {
+        const res = await axios.get(`http://localhost:3030/boards/${props.id}`);
+      } catch (e) {
+        errorMessage.value = e.response.data.message;
+        isDataValid.value = false;
+      }
+    });
 
     const { Board, Column } = context.root.$FeathersVuex.api;
 
@@ -130,6 +170,8 @@ export default defineComponent({
       prepareCol,
       boards,
       modifyProject,
+      isDataValid,
+      errorMessage,
     };
   },
 });

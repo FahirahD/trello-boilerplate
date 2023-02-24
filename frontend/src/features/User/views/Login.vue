@@ -1,49 +1,53 @@
 <template>
   <v-container class="fill-height align-center justify-center" fluid>
-    <div>
-      <v-icon class="d-flex" large>
-        mdi-clipboard-account
-      </v-icon>
-      <v-form v-model="isFormValid" @submit.prevent="signIn">
-        <v-text-field v-model="user" label="User" :rules="[(v) => !!v ||'Cannot be empty']" />
-        <v-text-field v-model="password" label="Password" :rules="[(v) => !!v ||'Cannot be empty']" />
-        <v-btn
-          :disabled="!isFormValid"
-          :loading="isAuthenticatePending"
-          class="d-flex justify-center"
-          type="submit"
-        >
-          Login
-        </v-btn>
-      </v-form>
-      <v-dialog
-        v-model="dialog"
-        persistent
-        width="auto"
-      >
-        <v-card>
-          <v-card-title class="text-h5">
-            <v-icon large>
-              mdi-alert-circle
-            </v-icon>
-            Authentication Error
-          </v-card-title>
-          <v-card-text>Invalid login </v-card-text>
-          <v-card-actions>
-            <v-spacer />
-
+    <v-row justify="center">
+      <v-col cols="12" sm="8" md="4">
+        <v-icon class="d-flex" large>
+          mdi-clipboard-account
+        </v-icon>
+        <v-form v-model="isFormValid" @submit.prevent="signIn">
+          <v-text-field v-model="user" label="User" :rules="[(v) => !!v ||'Cannot be empty']" />
+          <v-text-field v-model="password" label="Password" :rules="[(v) => !!v ||'Cannot be empty']" />
+          <v-row justify="center">
             <v-btn
               tile
-              depressed
-              class="green--text"
-              @click="dialog = false"
+              :disabled="!isFormValid"
+              :loading="isAuthenticatePending"
+              type="submit"
             >
-              OK
+              Login
             </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </div>
+          </v-row>
+        </v-form>
+      </v-col>
+    </v-row>
+    <v-dialog
+      v-model="dialog"
+      persistent
+      width="auto"
+    >
+      <v-card>
+        <v-card-title class="text-h5">
+          <v-icon large>
+            mdi-alert-circle
+          </v-icon>
+          Authentication Error
+        </v-card-title>
+        <v-card-text>Invalid login </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+
+          <v-btn
+            tile
+            depressed
+            class="green--text"
+            @click="dialog = false"
+          >
+            OK
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -70,11 +74,11 @@ export default defineComponent({
     const signIn = async () => {
       try {
         await login({ email: user.value, password: password.value, strategy: 'local' });
+        router.push('/projects');
       } catch (e) {
         dialog.value = true;
         console.log(e);
       }
-      router.push('/projects');
     };
 
     return {

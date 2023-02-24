@@ -1,12 +1,15 @@
 <template>
-  <v-app>
+  <v-app
+    class="pb-0 pt-0"
+  >
     <v-app-bar
       color="primary"
       app
       fixed
       flat
+      class="pb-0 pt-0"
     >
-      <v-row class="ma-0 d-flex align-center">
+      <v-row class="ma-0 pa-0 d-flex align-center">
         <v-col>
           <h3 style="color: white" v-text="$route.meta.title" />
         </v-col>
@@ -38,6 +41,7 @@
         </v-col>
         <v-col v-else class="pa-0" cols="auto">
           <v-btn
+            style="height:80px"
             depressed
             tile
             class=" white--text"
@@ -48,6 +52,7 @@
             LOGIN
           </v-btn>
           <v-btn
+            style="height:80px"
             depressed
             tile
             class="white--text"
@@ -100,23 +105,31 @@ export default defineComponent({
     //   }
     // );
 
-    // router.beforeEach(async (to, from, next) => {
-    //   if (to.name !== 'Login' && !isUserAuthenticated) next({ name: 'Login' });
-    //   else next();
-    //   // validate URL
-    //   const link = router.resolve(to.path);
-    //   if (link.resolved?.matched.length === 0) {
-    //     next('/404');
-    //     return;
-    //   }
-    //   next();
-    // });
+    router.beforeEach(async (to, from, next) => {
+      if (!isUserAuthenticated) {
+        next({ name: 'login' });
+      } else if (isUserAuthenticated) {
+        next({ name: 'projects' });
+      } else {
+        next();
+      }
+      // validate URL
+      const link = router.resolve(to.path);
+      if (link.resolved?.matched.length === 0) {
+        next('/404');
+        return;
+      }
+      next();
+    });
 
     onMounted(() => {
       $store.dispatch('auth/authenticate').catch((error) => {
         if (!error.message.includes('Could not find stored JWT')) {
           console.error(error);
           $router.replace({ name: 'login' });
+          if (isUserAuthenticated) {
+            $router.push('/projects');
+          }
         }
       });
     });

@@ -12,31 +12,31 @@ export default (lazyLoad) => ([
     meta: { title: 'Demo' },
     component: lazyLoad('features/ProjectsList/views/ProjectsList.vue'),
     // eslint-disable-next-line consistent-return
-    beforeEnter: async (to, from, next) => {
-      try {
-        const res = await axios.get(`http://localhost:3030/boards/${to.params.id}`);
-        next();
-      } catch (e) {
-        next({
-          name: 'BoardNotFound',
-          params: {
-            message: e.response.data.message,
-          },
-
-        });
-        console.log(to.path.split('/').slice(1));
-        console.log(e.response.data.message);
-      }
-      console.log(to);
-      // if (store.state.boards.ids.find((e) => e === to.params.id)) {
-      //   next();
-      // } else {
-      //   next({
-      //     name: 'BoardNotFound',
-      //
-      //   });
-      // }
-    }
+  //   beforeEnter: async (to, from, next) => {
+  //     try {
+  //       const res = await axios.get(`http://localhost:3030/boards/${to.params.id}`);
+  //       next();
+  //     } catch (e) {
+  //       next({
+  //         name: 'BoardNotFound',
+  //         params: {
+  //           message: e.response.data.message,
+  //         },
+  //
+  //       });
+  //       console.log(to.path.split('/').slice(1));
+  //       console.log(e.response.data.message);
+  //     }
+  //     console.log(to);
+  //     // if (store.state.boards.ids.find((e) => e === to.params.id)) {
+  //     //   next();
+  //     // } else {
+  //     //   next({
+  //     //     name: 'BoardNotFound',
+  //     //
+  //     //   });
+  //     // }
+  //   }
   },
 
 ]);
