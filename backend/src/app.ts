@@ -10,7 +10,7 @@ import express from '@feathersjs/express';
 import socketio from '@feathersjs/socketio';
 
 // eslint-disable-next-line import/no-unresolved
-import { plugin as Slicksort } from 'vue-slicksort';
+// import { plugin as Slicksort } from 'vue-slicksort';
 import { Application } from './declarations';
 import logger from './logger';
 import middleware from './middleware';
@@ -31,7 +31,7 @@ app.configure(configuration());
 app.use(helmet({
   contentSecurityPolicy: false
 }));
-app.use(Slicksort);
+// app.use(Slicksort);
 
 app.use(cors());
 app.use(compress());
